@@ -8,7 +8,9 @@
   <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
   <div class="navbar-nav">
     <div class="nav-item text-nowrap">
-      <a class="nav-link px-3" href="#">Sign out</a>
+      <p class="nav-link px-3">
+        <nuxt-link to="/signin">Sign out</nuxt-link>
+      </p>
     </div>
   </div>
 </header>
@@ -236,13 +238,49 @@
     </main>
   </div>
 </div>
-
   </div>
 </template>
 
 <script>
+import {client} from '~/init'
+import { Databases, ID , Permission} from 'appwrite';
+const databases = new Databases(client);
+
 export default {
   name: 'IndexPage',
+  data(){
+   return {
+    permisssionsArray: [],
+   }
+  },
+  mounted(){
+    this.listMessages()
+  },
+  methods: {
+    listMessages: async function() {
+      let promise = await databases.getDocument('6381e4342875d287ab7b', '6381e44a94d7c36be8f9', '6381fdd99caa8300b200');
+      const match = promise.$permissions.find(element => {
+        if (element.includes(this.$route.params.dashboard)) {
+          this.permisssionsArray.push(element)
+
+          let newPermission = ''
+
+          for (let i = 0; i< this.permisssionsArray.length; i++){
+            newPermission += this.permisssionsArray[i]
+          }
+        
+          if(newPermission.includes('read') && newPermission.includes('update') && newPermission.includes('delete')){
+            console.log('i can do all three')
+          } else if(newPermission.includes('read') && newPermission.includes('update')){
+            console.log('can read and update')
+          } else  if(newPermission.includes('read')){
+            console.log('can read')
+          }
+        }
+      });
+    },
+  },
+
 }
 </script>
 

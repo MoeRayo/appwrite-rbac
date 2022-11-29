@@ -2,14 +2,10 @@
   <div class="">
     
     <main class="form-signin w-100 mx-auto py-5 px-5 my-5">
-      <form class="mt-5" @submit.prevent="signUp">
+      <form class="mt-5" @submit.prevent="signIn">
        
         <h1 class="h3 mb-4 fw-normal text-center">Admin Dashboard</h1>
-
-        <div class="form-floating mb-3">
-          <label for="floatingInput">Username</label>
-          <input type="username" v-model="username" class="form-control" id="floatingInput" placeholder="Username">
-        </div>
+    
         <div class="form-floating mb-3">
           <label for="floatingInput">Email address</label>
           <input type="email" v-model="email" class="form-control" id="floatingInput" placeholder="name@example.com">
@@ -18,15 +14,10 @@
           <label for="floatingPassword">Password</label>
           <input type="password" v-model="password" class="form-control" id="floatingPassword" placeholder="Password">
         </div>
-        <div class="form-floating mb-4">
-          <label for="floatingPassword">Confirm Password</label>
-          <input type="confirm-password" v-model="confirmPassword" class="form-control" id="floatingPassword" placeholder="Confirm Password">
-        </div>
     
         <button class="w-100 btn btn-lg btn-primary" type="submit">Get Access</button>
-
-        <p class="mt-3">Already have an account? <nuxt-link to="/signin">Sign in</nuxt-link> </p>
-
+        <p class="mt-3">New? Create an account? <nuxt-link to="/">Sign up</nuxt-link> </p>
+        
       </form>
     </main>
     
@@ -34,32 +25,24 @@
 </template>
 <script>
 import {account} from '~/init'
+
 export default {
   data: () => ({
-    username: "",
     email: "",
     password: "",
-    confirmPassword: ""
   }),
   methods: {
-    signUp: async function(){
-      if (this.password.length >= 8){
-        if(this.password === this.confirmPassword) {
-          try{
-            await account.create('unique()', this.email, this.password, this.username)
-            alert("account created successfully")
-            window.location.href = '/signin'
-          } catch (e) {
-            console.log(e)
-          }
-        } else {
-          alert("password do not match")
-        }
-      } else {
-        alert("password length should be up to 8 characters")
+    signIn: async function () {
+      try{
+        let accountDetails = await account.createEmailSession(this.email, this.password)
+        alert("user signed in")
+        this.$router.push({ path: `/dashboard/${accountDetails.userId}`})
+      } catch (e){
+        console.log(e)
       }
     },
   }
+  
 }
 </script>
 <style scoped>
