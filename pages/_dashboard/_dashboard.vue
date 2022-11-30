@@ -244,7 +244,7 @@
 
 <script>
 import {client} from '~/init'
-import { Databases, ID , Permission} from 'appwrite';
+import { Databases } from 'appwrite';
 const databases = new Databases(client);
 
 export default {
@@ -259,11 +259,11 @@ export default {
    }
   },
   mounted(){
-    this.listMessages()
+    this.getDocumentPermissions()
   },
   methods: {
-    listMessages: async function() {
-      let promise = await databases.getDocument('6381e4342875d287ab7b', '6381e44a94d7c36be8f9', '6381fdd99caa8300b200');
+    getDocumentPermissions: async function() {
+      let promise = await databases.getDocument('6381e4342875d287ab7b', '6381e44a94d7c36be8f9', '6385d5b030814a0a9b78');
       const match = promise.$permissions.find(element => {
         if (element.includes(this.$route.params.dashboard)) {
           this.permisssionsArray.push(element)
